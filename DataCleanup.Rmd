@@ -1,0 +1,65 @@
+---
+title: "Twitter Data Analysis: #Venezuela and #Maduro"
+output: html_notebook---
+
+#Project Overview
+
+#Data Collection
+
+##How did we get the tweets?
+1) Created a script in R to pull tweets with the following text: Venezuela or Maduro or @Venezuela or @Maduro
+2) Identified the maximum number of tweets that can be pulled in a given time frame and assigned them to different lists: tweets500, tweets750, tweets900, tweets1500, tweets3000.
+3) Pulled 3000 tweets daily for the dates of Mar 8, 12 - 16, 18 and saved each pull in different variables.
+
+```{r}
+#tweets3000_3_16 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
+#class(tweets3000_3_16) #The class of the pulls is list.
+#Transform the list into data frame.
+#tweets.df3000_3_16 <- twLlistToDF(tweets3000_3_16)
+#Repeat steps 14-17 for each day's pull.
+#tweets.df3000_3_18 <- twLlistToDF(tweets3000_3_18)
+```
+
+
+##How do we store the tweets?
+
+Objective: Create a csv file that stores all of the pulled tweets. 
+
+* There may be an overlap in data pulls from each day (i.e., data pulled March 8th may have duplicate tweets from March 7th) 
+  + Solution: Add a column to each data frame in R that adds the source of the tweet. Store this in a new variable so the original data frame won't be edited.
+
+```{r}
+#tweets.df3000_3_16.ec <- mutate(tweets.df3000_3_16,source_data="tweets.df3000_3_16")
+#tweets.df3000_3_18.ec <- mutate(tweets.df3000_3_18,source_data="tweets.df3000_3_18")
+```
+
+* In order to ensure that all the pulled tweets are stored in a single file, we combine all the pulled tweets into a single Data Frame using rbind. (This works because each pull consists of the same variables.)
+
+```{r}
+#tweets.df.all1 <- rbind(tweets.df3000_3_16.ec, tweets.df3000_3_18.ec)
+
+#Since in our example we are joining two data frames with 3000 rows and 17 columns each, we would expect the combined data frame to have 6000 rows and 17 columns (confirmed by running the function below)
+
+# str(tweets.df.all1)
+```
+
+
+* Now that all the pulls are stored in a single data frame, we can create the csv file.
+
+```{r}
+# Ensure that the file is saved in the proper directory. In order to save the file in the same working directory, we need to set the working directory to the project folder. 
+# setwd(<insert project folder path here>)
+
+#Save the entire tweets into a csv file for further analysis
+# write.csv(tweets.df.all1, file = "tweets.df.all.csv")
+```
+
+
+#Data Analysis
+
+##Reading the CSV file 
+
+```{r}
+tweets.df.all <- read.csv("C:/Users/Ash/DataSci101/rtweetvenba/tweets.df.all.csv", header = TRUE, sep = ",") 
+```
+
