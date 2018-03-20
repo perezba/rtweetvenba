@@ -2,6 +2,10 @@
 title: "Twitter Data Analysis: #Venezuela and #Maduro"
 output: html_notebook---
 
+```{r}
+library(dplyr)
+```
+
 #Project Overview
 
 #Data Collection
@@ -60,6 +64,23 @@ Objective: Create a csv file that stores all of the pulled tweets.
 ##Reading the CSV file 
 
 ```{r}
-tweets.df.all <- read.csv("C:/Users/Ash/DataSci101/rtweetvenba/tweets.df.all.csv", header = TRUE, sep = ",") 
+tweets.df.all <- read.csv("C:/Users/Ash/DataSci101/rtweetvenba/tweets.df.all.csv", header = TRUE, sep = ",", stringsAsFactors=FALSE) 
 ```
+##data Cleaup
+#Identify relevant columns: text, created, id, screenName, statusSource, source_data, retweetCount, favoriteCount
+
+
+*Identify all the variables we want of the data table. In this case we want the following variables: 
+```{r}
+tweets.df.sel <- select(tweets.df.all, X, text, created, id, screenName, statusSource, source_data, retweetCount, favoriteCount)
+```
+
+#Removing Duplicates - dplyr must be loaded.
+
+```{r}
+dfnew <- distinct(tweets.df.sel, text, created, screenName, .keep_all = TRUE)
+
+```
+
+#Removing NAs
 
