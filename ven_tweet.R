@@ -1,5 +1,7 @@
 library(twitteR)
 library(rtweet)
+library(dplyr)
+library(tidyr)
 # Information needed to pull data from twitter. This will vary based on your own twitter account. 
 consumer_key <- "55GaUjeUYNQQzcRCJijKZFVed"
 consumer_secret <- "3wTTZNyMZRB0tREbsHPWotMKrGLMQAG8BouBm103rzSJ4SMicn"
@@ -25,6 +27,9 @@ tweets3000_3_14 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro",
 tweets3000_3_15 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
 tweets3000_3_16 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
 tweets3000_3_18 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
+tweets3000_3_19 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
+tweets3000_3_20 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
+tweets3000_3_21 <- searchTwitter("Venezuela OR #Venezuela OR Maduro OR #Maduro", n = 3000, lang = c("es","en"), retryOnRateLimit = 120 )
 
 
 # Convert the pulled tweets, which are class type list, from the previous step into a Data Frame in order to analyze the data.
@@ -40,8 +45,9 @@ tweets.df3000_3_14 <- twListToDF(tweets3000_3_14)
 tweets.df3000_3_15 <- twListToDF(tweets3000_3_15)
 tweets.df3000_3_16 <- twListToDF(tweets3000_3_16)
 tweets.df3000_3_18 <- twListToDF(tweets3000_3_18)
-#Before we join all this data we want to make sure that they are indeed similar (they should given that they were pulled in the same way)
-# We need to figure out that all the pulls have the same headers and are of the same type.
+tweets.df3000_3_19 <- twListToDF(tweets3000_3_19)
+tweets.df3000_3_20 <- twListToDF(tweets3000_3_20)
+tweets.df3000_3_21 <- twListToDF(tweets3000_3_21)
 
 # We need to add a column to each data frame that adds the source of the tweet. We store this in a new variable so we won't edit the source.
 tweets.df500.ec <- mutate(tweets.df500,source_data="tweets.df500")
@@ -55,12 +61,63 @@ tweets.df3000_3_14.ec <- mutate(tweets.df3000_3_14,source_data="tweets.df3000_3_
 tweets.df3000_3_15.ec <- mutate(tweets.df3000_3_15,source_data="tweets.df3000_3_15")
 tweets.df3000_3_16.ec <- mutate(tweets.df3000_3_16,source_data="tweets.df3000_3_16")
 tweets.df3000_3_18.ec <- mutate(tweets.df3000_3_18,source_data="tweets.df3000_3_18")
+tweets.df3000_3_19.ec <- mutate(tweets.df3000_3_19,source_data="tweets.df3000_3_19")
+tweets.df3000_3_20.ec <- mutate(tweets.df3000_3_20,source_data="tweets.df3000_3_20")
+tweets.df3000_3_21.ec <- mutate(tweets.df3000_3_21,source_data="tweets.df3000_3_21")
+
 # In order to ensure that all the pulled tweets are stored, we combine all the pulled tweets regardless of the day they were pulled into a single Data Frame using rbind.
-# This works given that each pull consists of the same variables.
-#rbind(<list all the data frames from the section above)
-tweets.df.all <- rbind(tweets.df500.ec,tweets.df750.ec,tweets.df900.ec,tweets.df1500.ec,tweets.df3000.ec,tweets.df3000_3_12.ec,tweets.df3000_3_13.ec,tweets.df3000_3_14.ec,tweets.df3000_3_15.ec)
-tweets.df.all1 <- rbind(tweets.df.all1,tweets.df3000_3_18.ec)
-#Save the entire tweets into a csv file for further analysis
-write.csv(tweets.df.all1, file = "tweets.df.all.csv")
-write.csv(rbind(tweets.df.all,tweets.df3000_3_16.ec), file = "tweets.df.all1.csv")
+#tweets.df.all <- rbind(tweets.df500.ec,tweets.df750.ec,tweets.df900.ec,tweets.df1500.ec,tweets.df3000.ec,tweets.df3000_3_12.ec,tweets.df3000_3_13.ec,tweets.df3000_3_14.ec,tweets.df3000_3_15.ec)
+#Save the initial pull of data to a csv file, this adds one column of row counts.
+#write.csv(tweets.df.all,file = "C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv")
+
+
+#Read the data that has been saved previously, to ensure that we can append new data. 
+test <- read.csv("C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv", header = TRUE,stringsAsFactors = FALSE)
+
+#Once the new sets of tweets have been pulled and the old tweets from the file are loaded, then we want
+#to append the new pull to the old data, and save it to the existing file.
+write.csv(rbind(select(test,-1),tweets.df3000_3_21.ec), file = "C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv")
+
+# Read the new csv file into a DF. This ensures that we are working with the latest tweets.
+test_upd <- read.csv("C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv", header = TRUE,stringsAsFactors = FALSE)
+
+# Remove duplicates based on text, created, screenName, statusSource. 
+test_rmv_dups <- distinct(test_upd, text, created, screenName,statusSource,.keep_all = TRUE)
+
+# Seperate statusSource based on the sep > in order to see where the source of the Tweet (Android, Iphone, Ipad)
+# Example of StatusSource: <a href="http://twitter.com/download/iphone" rel="nofollow">Twitter for iPhone</a>
+test_rmv_dups_sep <- separate(test_rmv_dups,statusSource, c("URL","Platform"),sep=">")
+test_rmv_dups_sep1 <- separate(test_rmv_dups_sep,Platform, c("Platform","Remove"),sep="<")
+
+# Remove the unnecasarry columns that resulted from separating statusSource.
+test_rmv_dups_sep2 <- select(test_rmv_dups_sep1,-URL,-Remove)
+
+# Create a DF with only the Platform used
+commonPlatform <- select(test_rmv_dups_sep2,Platform)
+
+# Create a variable that holds the frequency of the common platforms used
+# Source: https://stackoverflow.com/questions/24576515/relative-frequencies-proportions-with-dplyr/24576703
+commonPlatform_freq <- summarize(group_by(commonPlatform,Platform),freq=n())
+
+# Arrange the common platform in descending order, to see which type of device/platform was most used.
+commonPlatform_freq_desc <- arrange(commonPlatform_freq, desc(freq))
+
+# Add the proportion to the common platfrom
+commonPlatform_prop <- mutate(commonPlatform_freq_desc,prop=freq*100/sum(freq))
+
+# Create a DF with only the screenNames
+commonUsers <- select(test_rmv_dups_sep2,screenName)
+
+# Create a variable that holds the frequency of the users. i.e. Show's the amount of tweets each user has in the data set has sent
+commonUsers_freq <- summarize(group_by(commonUsers,screenName),freq=n())
+
+# Arrange the commonUsers_freq by descending order, to see the screename with most tweets.
+commonUsers_freq_desc <- arrange(commonUsers_freq,desc(freq))
+
+# Add the proportion to the common users
+commonUsers_prop <- mutate(commonUsers_freq_desc,prop=freq*100/sum(freq))
+
+# Remove NAs
+
+
 
