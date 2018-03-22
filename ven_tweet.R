@@ -1,8 +1,10 @@
+install.packages(c("twitteR", "rtweet", "dplyr", "tidyr"))
 library(twitteR)
 library(rtweet)
 library(dplyr)
 library(tidyr)
-# Information needed to pull data from twitter. This will vary based on your own twitter account. 
+
+# Information needed to pull data from twitter. This willl vary based on your own twitter account. 
 consumer_key <- "55GaUjeUYNQQzcRCJijKZFVed"
 consumer_secret <- "3wTTZNyMZRB0tREbsHPWotMKrGLMQAG8BouBm103rzSJ4SMicn"
 access_token <- "477084726-8559mi6USkMPNHdFrtvw39ApfEvOBE7uDTLFxq3S"
@@ -70,7 +72,6 @@ tweets.df3000_3_21.ec <- mutate(tweets.df3000_3_21,source_data="tweets.df3000_3_
 #Save the initial pull of data to a csv file, this adds one column of row counts.
 #write.csv(tweets.df.all,file = "C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv")
 
-
 #Read the data that has been saved previously, to ensure that we can append new data. 
 test <- read.csv("C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv", header = TRUE,stringsAsFactors = FALSE)
 
@@ -79,7 +80,7 @@ test <- read.csv("C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv
 write.csv(rbind(select(test,-1),tweets.df3000_3_21.ec), file = "C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv")
 
 # Read the new csv file into a DF. This ensures that we are working with the latest tweets.
-test_upd <- read.csv("C:/Users/brian.perez/DataScience/rtweetvenba/tweets.df.all.csv", header = TRUE,stringsAsFactors = FALSE)
+test_upd <- read.csv("C:/Users/Ash/DataSci101/rtweetvenba/tweets.df.all.csv", header = TRUE,stringsAsFactors = FALSE)
 
 # Remove duplicates based on text, created, screenName, statusSource. 
 test_rmv_dups <- distinct(test_upd, text, created, screenName,statusSource,.keep_all = TRUE)
@@ -117,7 +118,13 @@ commonUsers_freq_desc <- arrange(commonUsers_freq,desc(freq))
 # Add the proportion to the common users
 commonUsers_prop <- mutate(commonUsers_freq_desc,prop=freq*100/sum(freq))
 
-# Remove NAs
+# We want to find out the location of the tweets based on the latitude and longtiude variables/columns. 
+# We removed the NAs using the drop_na tidyr function. 
+# Source: https://stackoverflow.com/questions/4862178/remove-rows-with-nas-missing-values-in-data-frame
+# Another way to accomplish this task is to use the following dplyr filter function: 
+# test_lat_long <- filter(test_lat_long_1, !is.na(latitude), !is.na(longitude))
+test_lat_long1 <- drop_na(test_rmv_dups_sep2, latitude, longitude)
 
-
-
+#Save test_lat_long df as a CSV file to upload into ArcGIS online and create map.
+write.csv(test_lat_long1,file = "C:/Users/Ash/DataSci101/rtweetvenba/test_lat_long.csv", row.names = FALSE)
+#TO DO: 1) CREATE R MARKDOWN FILE FROM HERE 2) EMBED MAPS IN FILE
