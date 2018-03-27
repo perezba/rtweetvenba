@@ -146,7 +146,7 @@ $(document).ready(function () {
 <pre class="r"><code>test_upd &lt;- read.csv(paste(myPath,&quot;tweets.df.all.csv&quot;, sep=&quot;&quot;), header = TRUE,stringsAsFactors = FALSE)
 
 str(test_upd)</code></pre>
-<pre><code>## 'data.frame':    69650 obs. of  18 variables:
+<pre><code>## 'data.frame':    81650 obs. of  18 variables:
 ##  $ X            : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ text         : chr  &quot;RT @VatoRegio69: Enmascarados, maduro chingándose a chavito. Si quieres verga, la aguantas cabrón. https://t.co/dnYRDAF97m&quot; &quot;RT @DanielBlancoPz: Smartmatic cerró operaciones en Venezuela debido al fraude cometido por el Centro Nacional &quot;| __truncated__ &quot;Florida aprobó proyecto para prohibir a empresas negociar con el régimen de Maduro https://t.co/zT4GHC4F0g&quot; &quot;Oposición crea “Frente Amplio Venezuela Libre” y convoca acciones de calle https://t.co/I7d5rAYmfI vía @YouTube&quot; ...
 ##  $ favorited    : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
@@ -168,7 +168,7 @@ str(test_upd)</code></pre>
 <p>Remove duplicates based on text, created, screenName, statusSource.</p>
 <pre class="r"><code>test_rmv_dups &lt;- distinct(test_upd, text, created, screenName,statusSource,.keep_all = TRUE)
 str(test_rmv_dups)</code></pre>
-<pre><code>## 'data.frame':    65165 obs. of  18 variables:
+<pre><code>## 'data.frame':    75262 obs. of  18 variables:
 ##  $ X            : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ text         : chr  &quot;RT @VatoRegio69: Enmascarados, maduro chingándose a chavito. Si quieres verga, la aguantas cabrón. https://t.co/dnYRDAF97m&quot; &quot;RT @DanielBlancoPz: Smartmatic cerró operaciones en Venezuela debido al fraude cometido por el Centro Nacional &quot;| __truncated__ &quot;Florida aprobó proyecto para prohibir a empresas negociar con el régimen de Maduro https://t.co/zT4GHC4F0g&quot; &quot;Oposición crea “Frente Amplio Venezuela Libre” y convoca acciones de calle https://t.co/I7d5rAYmfI vía @YouTube&quot; ...
 ##  $ favorited    : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
@@ -197,7 +197,7 @@ str(test_rmv_dups)</code></pre>
 ## 5   &lt;a href=&quot;http://twitter.com/download/iphone&quot; rel=&quot;nofollow&quot;&gt;Twitter for iPhone&lt;/a&gt;</code></pre>
 <p>Seperate statusSource based on the sep &gt; in order to see the platform of the Tweet (Android, Iphone, Ipad)</p>
 <pre class="r"><code>test_rmv_dups_sep &lt;- separate(test_rmv_dups,statusSource, c(&quot;URL&quot;,&quot;Platform&quot;),sep=&quot;&gt;&quot;)</code></pre>
-<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 65165 rows [1,
+<pre><code>## Warning: Expected 2 pieces. Additional pieces discarded in 75262 rows [1,
 ## 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].</code></pre>
 <pre class="r"><code>head(select(test_rmv_dups_sep,URL, Platform),5)</code></pre>
 <pre><code>##                                                            URL
@@ -224,7 +224,7 @@ head(select(test_rmv_dups_sep1,Platform, Remove),5)</code></pre>
 <p>Remove the unnecasarry columns that resulted from separating statusSource.</p>
 <pre class="r"><code>test_rmv_dups_sep2 &lt;- select(test_rmv_dups_sep1,-URL,-Remove)
 str(test_rmv_dups_sep2)</code></pre>
-<pre><code>## 'data.frame':    65165 obs. of  18 variables:
+<pre><code>## 'data.frame':    75262 obs. of  18 variables:
 ##  $ X            : int  1 2 3 4 5 6 7 8 9 10 ...
 ##  $ text         : chr  &quot;RT @VatoRegio69: Enmascarados, maduro chingándose a chavito. Si quieres verga, la aguantas cabrón. https://t.co/dnYRDAF97m&quot; &quot;RT @DanielBlancoPz: Smartmatic cerró operaciones en Venezuela debido al fraude cometido por el Centro Nacional &quot;| __truncated__ &quot;Florida aprobó proyecto para prohibir a empresas negociar con el régimen de Maduro https://t.co/zT4GHC4F0g&quot; &quot;Oposición crea “Frente Amplio Venezuela Libre” y convoca acciones de calle https://t.co/I7d5rAYmfI vía @YouTube&quot; ...
 ##  $ favorited    : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
@@ -252,20 +252,20 @@ str(test_rmv_dups_sep2)</code></pre>
 <p>Add the proportion to the common platfrom to show the most used platform</p>
 <pre class="r"><code>commonPlatform_prop &lt;- mutate(commonPlatform_freq_desc,prop=freq*100/sum(freq))
 commonPlatform_prop</code></pre>
-<pre><code>## # A tibble: 292 x 3
+<pre><code>## # A tibble: 314 x 3
 ##    Platform             freq   prop
 ##    &lt;chr&gt;               &lt;int&gt;  &lt;dbl&gt;
-##  1 Twitter for Android 31532 48.4  
-##  2 Twitter Web Client  13586 20.8  
-##  3 Twitter for iPhone   9392 14.4  
-##  4 Twitter Lite         2641  4.05 
-##  5 TweetDeck            1576  2.42 
-##  6 Twitter for iPad     1303  2.00 
-##  7 Mobile Web (M2)       414  0.635
-##  8 Facebook              375  0.575
-##  9 Hootsuite             371  0.569
-## 10 IFTTT                 349  0.536
-## # ... with 282 more rows</code></pre>
+##  1 Twitter for Android 36645 48.7  
+##  2 Twitter Web Client  15505 20.6  
+##  3 Twitter for iPhone  10774 14.3  
+##  4 Twitter Lite         2985  3.97 
+##  5 TweetDeck            1807  2.40 
+##  6 Twitter for iPad     1504  2.00 
+##  7 Mobile Web (M2)       468  0.622
+##  8 Hootsuite             437  0.581
+##  9 Facebook              434  0.577
+## 10 IFTTT                 407  0.541
+## # ... with 304 more rows</code></pre>
 <p>Create a DF with only the screenNames</p>
 <pre class="r"><code>commonUsers &lt;- select(test_rmv_dups_sep2,screenName)</code></pre>
 <p>Create a variable that holds the frequency of the users (i.e. Show’s the amount of tweets each user has in the data set).</p>
@@ -275,24 +275,24 @@ commonPlatform_prop</code></pre>
 <p>Add the proportion to the common screenNames / users to show the percentages.</p>
 <pre class="r"><code>commonUsers_prop &lt;- mutate(commonUsers_freq_desc,prop=freq*100/sum(freq))
 commonUsers_prop</code></pre>
-<pre><code>## # A tibble: 34,546 x 3
+<pre><code>## # A tibble: 39,090 x 3
 ##    screenName       freq   prop
 ##    &lt;chr&gt;           &lt;int&gt;  &lt;dbl&gt;
-##  1 MCRC_Venezuela    148 0.227 
-##  2 NoticiasVenezue   112 0.172 
-##  3 notiven            99 0.152 
-##  4 ElNacionalWeb      98 0.150 
-##  5 la_patilla         71 0.109 
-##  6 ContextoDiario     61 0.0936
-##  7 descifradocom      56 0.0859
-##  8 Nuevomedio         54 0.0829
-##  9 contrapuntovzla    50 0.0767
-## 10 venezuelaaldia     45 0.0691
-## # ... with 34,536 more rows</code></pre>
+##  1 MCRC_Venezuela    161 0.214 
+##  2 NoticiasVenezue   129 0.171 
+##  3 notiven           109 0.145 
+##  4 ElNacionalWeb     106 0.141 
+##  5 la_patilla         96 0.128 
+##  6 ContextoDiario     71 0.0943
+##  7 Nuevomedio         59 0.0784
+##  8 contrapuntovzla    58 0.0771
+##  9 descifradocom      56 0.0744
+## 10 Lechuguinos_com    54 0.0717
+## # ... with 39,080 more rows</code></pre>
 <p>We want to find out the location of the tweets based on the latitude and longtiude variables/columns. We removed the NAs using the drop_na tidyr function. Source: <a href="https://stackoverflow.com/questions/4862178/remove-rows-with-nas-missing-values-in-data-frame" class="uri">https://stackoverflow.com/questions/4862178/remove-rows-with-nas-missing-values-in-data-frame</a> <br> Another way to accomplish this task is to use the following dplyr filter function: test_lat_long &lt;- filter(test_lat_long_1, !is.na(latitude), !is.na(longitude))</p>
 <pre class="r"><code>test_lat_long1 &lt;- drop_na(test_rmv_dups_sep2, latitude, longitude)
 str(test_lat_long1)</code></pre>
-<pre><code>## 'data.frame':    77 obs. of  18 variables:
+<pre><code>## 'data.frame':    90 obs. of  18 variables:
 ##  $ X            : int  78 478 3665 3690 3785 3814 7411 8081 8234 10396 ...
 ##  $ text         : chr  &quot;&lt;U+2488&gt; Hogares de la Patria\n&lt;U+2489&gt; Frente Amplio Venezuela Libre\n&lt;U+248A&gt; #YoSoyCampusLibertad\n&lt;U+248B&gt; &quot;| __truncated__ &quot;#mujer en Venezuela https://t.co/fWUFhFKcAk&quot; &quot;Buenas Tardes gente &lt;ed&gt;&lt;U+00A0&gt;&lt;U+00BD&gt;&lt;ed&gt;&lt;U+00B8&gt;&lt;U+008D&gt;&lt;ed&gt;&lt;U+00A0&gt;&lt;U+00BD&gt;&lt;ed&gt;&lt;U+00B2&gt;&lt;U+0093&gt; &lt;U+2600&gt; a&quot;| __truncated__ &quot;El combo frao,  tas cla.  #tbt en Venezuela https://t.co/kzR6cutESx&quot; ...
 ##  $ favorited    : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
