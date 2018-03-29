@@ -17,10 +17,10 @@ library(tidyr)
 #' Information needed to pull data from twitter: CONSUMER_KEY, CONSUMER SECRET,ACCESS_TOKEN, ACCESS_SECRET. 
 #' This willl vary based on your own twitter account. 
 #+ include=FALSE
-consumer_key <- "55GaUjeUYNQQzcRCJijKZFVed"
-consumer_secret <- "3wTTZNyMZRB0tREbsHPWotMKrGLMQAG8BouBm103rzSJ4SMicn"
-access_token <- "477084726-8559mi6USkMPNHdFrtvw39ApfEvOBE7uDTLFxq3S"
-access_secret <- "CJJSpYn6Za8dpCZQIzXiBtUaXtj5tjHw6rQfu9gqH7Jm8"
+consumer_key <- ""
+consumer_secret <- ""
+access_token <- ""
+access_secret <- ""
 
 
 #+ include=TRUE
